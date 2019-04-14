@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private VideoView videoPreview;
     private Button btnCapturePicture, btnFindProducts;
 
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,8 +196,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void findProductTitle() {
-        final ProgressDialog progressDialog = CommonUtil.progressDialog(MainActivity.this);
-        progressDialog.show();
+        progressDialog = CommonUtil.progressDialog(MainActivity.this);
+
+        if (progressDialog != null && !progressDialog.isShowing()) {
+            progressDialog.show();
+        }
 
         File file = new File(imageStoragePath);
 
@@ -209,7 +213,9 @@ public class MainActivity extends AppCompatActivity {
         APIHelper.enqueueWithRetry(cloudSightService.processImage(multipartData), new Callback<ImageData>() {
             @Override
             public void onResponse(Call<ImageData> call, Response<ImageData> response) {
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 ImageData imageData = response.body();
                 txtProductName.setText("Product Name : " + imageData.getName());
                 productName = imageData.getName();
@@ -218,13 +224,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ImageData> call, Throwable t) {
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(getApplicationContext(),
                         "Given product has not been found",
                         Toast.LENGTH_LONG).show();
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        super.onDestroy();
     }
 
     /**

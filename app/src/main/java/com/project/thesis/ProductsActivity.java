@@ -25,6 +25,8 @@ import retrofit2.Retrofit;
 
 public class ProductsActivity extends AppCompatActivity {
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +45,10 @@ public class ProductsActivity extends AppCompatActivity {
 
     private void initializeData(String title, final RecyclerView rv, final Context context){
         Retrofit retrofit = HttpClient.createClient();
-        final ProgressDialog progressDialog = CommonUtil.progressDialog(ProductsActivity.this);
-        progressDialog.show();
+        progressDialog = CommonUtil.progressDialog(ProductsActivity.this);
+        if (progressDialog != null && !progressDialog.isShowing()) {
+            progressDialog.show();
+        }
 
         APIHelper.enqueueWithRetry(retrofit.create(CloudSightService.class).findProducts(title), new Callback<List<ProductData>>() {
 
@@ -52,17 +56,29 @@ public class ProductsActivity extends AppCompatActivity {
             public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
                 RVAdapter adapter = new RVAdapter(context, response.body());
                 rv.setAdapter(adapter);
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
             }
 
             @Override
             public void onFailure(Call<List<ProductData>> call, Throwable t) {
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(getApplicationContext(),
                         "Products not found",
                         Toast.LENGTH_LONG).show();
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        super.onDestroy();
     }
 }
