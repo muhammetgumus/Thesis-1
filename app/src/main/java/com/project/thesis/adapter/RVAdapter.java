@@ -1,7 +1,10 @@
-package com.project.thesis;
+package com.project.thesis.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,51 +15,63 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.project.thesis.model.MovieData;
+import com.project.thesis.R;
+import com.project.thesis.model.ProductData;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MovieViewHolder> {
 
-    List<MovieData> movies;
+    List<ProductData> productDataList;
+    Context context;
 
-    RVAdapter(List<MovieData> movies) {
-        this.movies = movies;
+    public RVAdapter(Context context, List<ProductData> productDataList) {
+        this.productDataList = productDataList;
+        this.context = context;
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
-        TextView movieName;
-        TextView movieYear;
-        ImageView movieImage;
+        TextView txtProductTitle;
+        TextView txtProductPrice;
+        ImageView ivProduct;
 
-        MovieViewHolder(View itemView) {
+        MovieViewHolder(final View itemView) {
             super(itemView);
             cv = (CardView) itemView.findViewById(R.id.cv);
-            movieName = (TextView) itemView.findViewById(R.id.movie_name);
-            movieYear = (TextView) itemView.findViewById(R.id.movie_year);
-            movieImage = (ImageView) itemView.findViewById(R.id.movie_image);
+            txtProductTitle = (TextView) itemView.findViewById(R.id.txtProductTitle);
+            txtProductPrice = (TextView) itemView.findViewById(R.id.txtPrice);
+            ivProduct = (ImageView) itemView.findViewById(R.id.ivProduct);
         }
     }
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return productDataList.size();
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_item, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.product_item, viewGroup, false);
         MovieViewHolder mvh = new MovieViewHolder(v);
         return mvh;
     }
 
     @Override
-    public void onBindViewHolder(MovieViewHolder movieViewHolder, int i) {
-        movieViewHolder.movieName.setText(movies.get(i).name);
-        movieViewHolder.movieYear.setText(movies.get(i).year);
-        new DownloadImageTask(movieViewHolder.movieImage).execute(movies.get(i).image_url);
+    public void onBindViewHolder(MovieViewHolder movieViewHolder, final int i) {
+        movieViewHolder.txtProductTitle.setText(productDataList.get(i).getTitle());
+        movieViewHolder.txtProductPrice.setText(productDataList.get(i).getPrice());
+
+        movieViewHolder.cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(productDataList.get(i).getLink()));
+                context.startActivity(browserIntent);
+            }
+        });
+
+        new DownloadImageTask(movieViewHolder. ivProduct).execute(productDataList.get(i).getImageLink());
 
     }
 
@@ -81,7 +96,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MovieViewHolder> {
         }
 
         protected void onPostExecute(Bitmap result) {
-            //bmImage.setImageBitmap(result);
+            bmImage.setImageBitmap(result);
         }
     }
 }

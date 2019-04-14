@@ -1,6 +1,7 @@
 package com.project.thesis;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.project.thesis.http.CloudSightService;
 import com.project.thesis.http.HttpClient;
 import com.project.thesis.model.ImageData;
 import com.project.thesis.util.CameraUtils;
+import com.project.thesis.util.CommonUtil;
 
 import java.io.File;
 import java.util.List;
@@ -76,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //setSupportActionBar(toolbar);
 
         // Checking availability of the camera
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(MainActivity.this, ProductsActivity.class);
-                //myIntent.putExtra("key", value); //Optional parameters
+                myIntent.putExtra("productTitle", productName); //Optional parameters
                 MainActivity.this.startActivity(myIntent);
             }
         });
@@ -176,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
      * Capturing Camera Image will launch camera app requested image capture
      */
     private void captureImage() {
+        btnFindProducts.setEnabled(false);
+
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File file = CameraUtils.getOutputMediaFile(MEDIA_TYPE_IMAGE);
@@ -192,6 +195,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void findProductTitle() {
+        final ProgressDialog progressDialog = CommonUtil.progressDialog(MainActivity.this);
+        progressDialog.show();
+
         File file = new File(imageStoragePath);
 
         Retrofit retrofit = HttpClient.createClient();
@@ -203,13 +209,16 @@ public class MainActivity extends AppCompatActivity {
         APIHelper.enqueueWithRetry(cloudSightService.processImage(multipartData), new Callback<ImageData>() {
             @Override
             public void onResponse(Call<ImageData> call, Response<ImageData> response) {
+                progressDialog.dismiss();
                 ImageData imageData = response.body();
                 txtProductName.setText("Product Name : " + imageData.getName());
                 productName = imageData.getName();
+                btnFindProducts.setEnabled(true);
             }
 
             @Override
             public void onFailure(Call<ImageData> call, Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(),
                         "Given product has not been found",
                         Toast.LENGTH_LONG).show();

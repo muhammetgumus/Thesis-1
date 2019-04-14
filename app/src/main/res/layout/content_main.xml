@@ -71,6 +71,7 @@
         <!-- Record video button -->
         <Button
             android:id="@+id/btnFindProducts"
+            android:enabled="false"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_8"
