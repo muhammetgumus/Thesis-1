@@ -23,10 +23,22 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.project.thesis.http.APIHelper;
+import com.project.thesis.http.CloudSightService;
+import com.project.thesis.http.HttpClient;
+import com.project.thesis.model.ImageData;
 import com.project.thesis.util.CameraUtils;
 
 import java.io.File;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,11 +63,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String VIDEO_EXTENSION = "mp4";
 
     private static String imageStoragePath;
+    private static String productName;
 
     private TextView txtDescription;
+    private TextView txtProductName;
     private ImageView imgPreview;
     private VideoView videoPreview;
-    private Button btnCapturePicture, btnRecordVideo;
+    private Button btnCapturePicture, btnFindProducts;
 
 
     @Override
@@ -74,14 +88,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         txtDescription = findViewById(R.id.txt_desc);
+        txtProductName = findViewById(R.id.txt_product_name);
         imgPreview = findViewById(R.id.imgPreview);
         videoPreview = findViewById(R.id.videoPreview);
         btnCapturePicture = findViewById(R.id.btnCapturePicture);
-        btnRecordVideo = findViewById(R.id.btnRecordVideo);
+        btnFindProducts = findViewById(R.id.btnFindProducts);
 
-        /**
-         * Capture image on button click
-         */
         btnCapturePicture.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -94,10 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * Record video on button click
-         */
-        btnRecordVideo.setOnClickListener(new View.OnClickListener() {
+        btnFindProducts.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -180,6 +189,33 @@ public class MainActivity extends AppCompatActivity {
 
         // start the image capture Intent
         startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
+
+    private void findProductTitle() {
+        File file = new File(imageStoragePath);
+
+        Retrofit retrofit = HttpClient.createClient();
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part multipartData = MultipartBody.Part.createFormData("file","imageToUpload",requestFile);
+        CloudSightService cloudSightService = retrofit.create(CloudSightService.class);
+
+        APIHelper.enqueueWithRetry(cloudSightService.processImage(multipartData), new Callback<ImageData>() {
+            @Override
+            public void onResponse(Call<ImageData> call, Response<ImageData> response) {
+                ImageData imageData = response.body();
+                txtProductName.setText("Product Name : " + imageData.getName());
+                productName = imageData.getName();
+            }
+
+            @Override
+            public void onFailure(Call<ImageData> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),
+                        "Given product has not been found",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     /**
@@ -288,6 +324,8 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
 
             imgPreview.setImageBitmap(bitmap);
+
+            findProductTitle();
 
         } catch (NullPointerException e) {
             e.printStackTrace();

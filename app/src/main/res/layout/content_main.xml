@@ -18,6 +18,13 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/txt_product_name"
+            android:text="Product Name : Loading..."/>
+
+        <TextView
             android:id="@+id/txt_desc"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
@@ -63,14 +70,14 @@
 
         <!-- Record video button -->
         <Button
-            android:id="@+id/btnRecordVideo"
+            android:id="@+id/btnFindProducts"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_8"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:foreground="?attr/selectableItemBackground"
-            android:text="@string/btn_record_video"
+            android:text="@string/btn_find_products"
             android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>
