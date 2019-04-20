@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/cv"
-        >
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/cardview_light_background">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,7 +33,8 @@
                 android:id="@+id/txtProductTitle"
                 android:layout_toRightOf="@+id/ivProduct"
                 android:layout_alignParentTop="true"
-                android:textSize="25sp"
+                android:textSize="15sp"
+                android:textColor="#4a90e2"
                 />
 
             <TextView
@@ -40,6 +43,14 @@
                 android:id="@+id/txtPrice"
                 android:layout_toRightOf="@+id/ivProduct"
                 android:layout_below="@+id/txtProductTitle"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="100dp"
+                android:minWidth="0dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/roundedfortextview"
                 />
 
 

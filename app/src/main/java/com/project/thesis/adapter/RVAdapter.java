@@ -13,8 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.project.thesis.R;
 import com.project.thesis.model.ProductData;
 
@@ -43,7 +46,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MovieViewHolder> {
             txtProductTitle = (TextView) itemView.findViewById(R.id.txtProductTitle);
             txtProductPrice = (TextView) itemView.findViewById(R.id.txtPrice);
             ivProduct = (ImageView) itemView.findViewById(R.id.ivProduct);
+
+
         }
+
+
     }
 
     @Override
@@ -61,7 +68,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MovieViewHolder> {
     @Override
     public void onBindViewHolder(MovieViewHolder movieViewHolder, final int i) {
         movieViewHolder.txtProductTitle.setText(productDataList.get(i).getTitle());
-        movieViewHolder.txtProductPrice.setText(productDataList.get(i).getPrice());
+        movieViewHolder.txtProductPrice.setText("$" + " " +  productDataList.get(i).getPrice());
 
         movieViewHolder.cv.setOnClickListener(new View.OnClickListener() {
             @Override

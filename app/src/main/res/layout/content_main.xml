@@ -17,12 +17,19 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
+        <Button
             android:id="@+id/txt_product_name"
-            android:text="Product Name : Loading..."/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:padding="5dp"
+            android:text="Product Name : Loading..."
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/productloading" />
+
+
 
         <TextView
             android:id="@+id/txt_desc"
@@ -31,6 +38,7 @@
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/preview_description"
+            android:textStyle="bold"
             android:textSize="15dp" />
 
         <!-- To display picture taken -->
@@ -63,10 +71,11 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dimen_8"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/btn_take_picture"
-            android:textColor="@android:color/white" />
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/mybutton"/>
 
         <!-- Record video button -->
         <Button
@@ -76,9 +85,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_8"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/btn_find_products"
-            android:textColor="@android:color/white" />
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/mybutton"
+            />
     </LinearLayout>
 </LinearLayout>

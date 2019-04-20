@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.project.thesis.adapter.RVAdapter;
 import com.project.thesis.http.APIHelper;
 import com.project.thesis.http.CloudSightService;
@@ -18,12 +21,14 @@ import com.project.thesis.util.CommonUtil;
 
 import java.util.List;
 
+import lal.adhish.gifprogressbar.GifView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ProductsActivity extends AppCompatActivity {
+
 
     private ProgressDialog progressDialog;
 
@@ -38,9 +43,13 @@ public class ProductsActivity extends AppCompatActivity {
         rv.setLayoutManager(llm);
 
         Intent intent = getIntent();
-        String productTitle = intent.getStringExtra("productTitle");
+        String productTitle = intent.getStringExtra("productTitle" );
+
+
 
         initializeData(productTitle, rv, getApplicationContext());
+
+
     }
 
     private void initializeData(String title, final RecyclerView rv, final Context context){

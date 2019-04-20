@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String VIDEO_EXTENSION = "mp4";
 
     private static String imageStoragePath;
-    private static String productName;
+    private static String productName="";
 
     private TextView txtDescription;
     private TextView txtProductName;
@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
             // will close the app if the device doesn't have camera
             finish();
         }
+
+
 
         txtDescription = findViewById(R.id.txt_desc);
         txtProductName = findViewById(R.id.txt_product_name);
